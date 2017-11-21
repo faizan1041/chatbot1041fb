@@ -31,6 +31,20 @@ def reply(user_id, msg):
     print(resp.content)
 
 
+@app.route('/webhook/', methods=['GET'])
+def webhook():
+    # our endpoint echos back the 'hub.challenge' value specified when we setup the webhook
+    if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
+        if not request.args.get("hub.verify_token") == 'foo':
+            return "Verification token mismatch", 403
+        return request.args["hub.challenge"], 200
+
+    return 'Hello World (from Flask!)', 200
+
+
+   
+
+
 @app.route('/', methods=['POST'])
 def handle_incoming_messages():
     data = request.json
